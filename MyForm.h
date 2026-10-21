@@ -37,7 +37,10 @@ namespace FocaFrenzy {
 	private: System::Windows::Forms::Button^ boton_iniciar;
 	
 	private: System::Windows::Forms::Label^ label_puntaje;
-	
+	private: System::Windows::Forms::Timer^ timer_peces;
+
+	private: System::ComponentModel::IContainer^ components;
+
 	protected:
 
 	protected:
@@ -46,7 +49,7 @@ namespace FocaFrenzy {
 		/// <summary>
 		/// Variable del diseñador necesaria.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -55,8 +58,10 @@ namespace FocaFrenzy {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->boton_iniciar = (gcnew System::Windows::Forms::Button());
 			this->label_puntaje = (gcnew System::Windows::Forms::Label());
+			this->timer_peces = (gcnew System::Windows::Forms::Timer(this->components));
 			this->SuspendLayout();
 			// 
 			// boton_iniciar
@@ -80,6 +85,11 @@ namespace FocaFrenzy {
 			this->label_puntaje->TabIndex = 1;
 			this->label_puntaje->Text = L"Score: 0";
 			this->label_puntaje->Click += gcnew System::EventHandler(this, &MyForm::label_puntaje_Click);
+			// 
+			// timer_peces
+			// 
+			this->timer_peces->Interval = 1000;
+			this->timer_peces->Tick += gcnew System::EventHandler(this, &MyForm::timer_peces_Tick);
 			// 
 			// MyForm
 			// 
@@ -107,6 +117,7 @@ namespace FocaFrenzy {
 	{
 
 	}
+
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
@@ -117,14 +128,40 @@ namespace FocaFrenzy {
 		pez->Top = r->Next(this->ClientSize.Height - 60);
 		pez->Text = "Pez"; //Le ponemos texto
 		pez->Parent = this; //Pegamos en el formulario
+		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
+		timer_peces->Start();
 	}
 
 	private: System::Void pez_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		//Aqui va a ir lo que va a pasar cuando le demos click a un pez.
+		Button^ pez = (Button^)sender;
+		delete pez; //Desaparece al pez
+		puntaje++;
+		label_puntaje->Text = "Score: " + puntaje;
 	}
 	
-	private: System::Void label_puntaje_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void label_puntaje_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+
+	}
+
+	private: System::Void timer_peces_Tick(System::Object^ sender, System::EventArgs^ e)
+	{
+		Random^ r = gcnew Random();
+		Button^ pez = gcnew Button();
+		pez->Width = r->Next(40, 100);
+		pez->Height = r->Next(30, 60);
+		pez->Left = r->Next(this->ClientSize.Width - 60);
+		pez->Top = r->Next(this->ClientSize.Height - 60);
+		pez->Text = "Pez";
+		pez->Parent = this;
+		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
+
+		if (this->Controls->Count > 17)
+		{
+			timer_peces->Stop(); //Aqui se van a detener los peces
+			MessageBox::Show("You lost! Your score was: " + puntaje);
+		}
 	}
 };
 }
