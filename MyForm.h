@@ -38,6 +38,9 @@ namespace FocaFrenzy {
 	
 	private: System::Windows::Forms::Label^ label_puntaje;
 	private: System::Windows::Forms::Timer^ timer_peces;
+	private: System::Windows::Forms::ImageList^ imagenes_peces;
+
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -59,9 +62,11 @@ namespace FocaFrenzy {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->boton_iniciar = (gcnew System::Windows::Forms::Button());
 			this->label_puntaje = (gcnew System::Windows::Forms::Label());
 			this->timer_peces = (gcnew System::Windows::Forms::Timer(this->components));
+			this->imagenes_peces = (gcnew System::Windows::Forms::ImageList(this->components));
 			this->SuspendLayout();
 			// 
 			// boton_iniciar
@@ -90,6 +95,12 @@ namespace FocaFrenzy {
 			// 
 			this->timer_peces->Interval = 1000;
 			this->timer_peces->Tick += gcnew System::EventHandler(this, &MyForm::timer_peces_Tick);
+			// 
+			// imagenes_peces
+			// 
+			this->imagenes_peces->ImageStream = (cli::safe_cast<System::Windows::Forms::ImageListStreamer^>(resources->GetObject(L"imagenes_peces.ImageStream")));
+			this->imagenes_peces->TransparentColor = System::Drawing::Color::Transparent;
+			this->imagenes_peces->Images->SetKeyName(0, L"pez1.png");
 			// 
 			// MyForm
 			// 
@@ -122,12 +133,12 @@ namespace FocaFrenzy {
 	{
 
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
-		Button^ pez = gcnew Button(); //Crea un botón nuevo en memoria, lo llamaremos pez.
-		pez->Width = r->Next(40, 100); //A este pez le damos un ancho y alto.
-		pez->Height = r->Next(30, 60);
+		PictureBox^ pez = gcnew PictureBox();
+		pez->Image = imagenes_peces->Images[0];
+		pez->SizeMode = PictureBoxSizeMode::AutoSize;
+		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
-		pez->Text = "Pez"; //Le ponemos texto
 		pez->Tag = "Pez";
 		pez->Parent = this; //Pegamos en el formulario
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
@@ -136,7 +147,7 @@ namespace FocaFrenzy {
 
 	private: System::Void pez_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		Button^ pez = (Button^)sender;
+		PictureBox^ pez = (PictureBox^)sender;
 		delete pez; //Desaparece al pez
 		puntaje++;
 
@@ -156,19 +167,19 @@ namespace FocaFrenzy {
 	private: System::Void timer_peces_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
 		Random^ r = gcnew Random();
-		Button^ pez = gcnew Button();
-		pez->Width = r->Next(40, 100);
-		pez->Height = r->Next(30, 60);
+		PictureBox^ pez = gcnew PictureBox();
+		pez->Image = imagenes_peces->Images[0];
+		pez->SizeMode = PictureBoxSizeMode::AutoSize;
+		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
-		pez->Text = "Pez";
 		pez->Tag = "Pez";
 		pez->Parent = this;
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
 
-		timer_peces->Interval = 300;
+		timer_peces->Interval = 500;
 
-		if (this->Controls->Count > 17)
+		if (this->Controls->Count > 5)
 		{
 			timer_peces->Stop(); //Aqui se van a detener los peces
 			MessageBox::Show("You lost! Your score was: " + puntaje);
