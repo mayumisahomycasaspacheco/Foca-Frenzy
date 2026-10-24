@@ -12,6 +12,10 @@ Foca Frenzy is a small fish-catching game made with C++ and Windows Forms. Fish 
 - C++/CLI and Windows Forms, in Visual Studio
 - Pixel art, touched up in Aseprite
 
+## Things I'd like to add
+- Sound effects (right now it's just the Windows beep)
+- Jellyfish that take points away
+
 Thanks for playing.
 
 *A project made for YSWS Terra by Hack Club*
