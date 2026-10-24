@@ -152,6 +152,8 @@ namespace FocaFrenzy {
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 
+		boton_iniciar->Visible = false;
+
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
 		PictureBox^ pez = gcnew PictureBox();
 		int tipo = r->Next(10);
@@ -181,12 +183,22 @@ namespace FocaFrenzy {
 
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
-		pez->Left = r->Next(this->ClientSize.Width - 60);
-		pez->Top = r->Next(this->ClientSize.Height - 60);
+		pez->Left = r->Next(this->ClientSize.Width - 64);
+		pez->Top = r->Next(this->ClientSize.Height - 40);
 		pez->Parent = this; //Pegamos en el formulario
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
+		
 		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
-		vida->Interval = 4000;
+		
+		int tiempo_vida = 4000 - (puntaje / 5) * 250;
+
+		if (tiempo_vida < 1500)
+		{
+			tiempo_vida = 1500;
+		}
+
+		vida->Interval = tiempo_vida;
+
 		vida->Tag = pez;
 		vida->Tick += gcnew System::EventHandler(this, &MyForm::vida_tick);
 		vida->Start();
@@ -199,10 +211,14 @@ namespace FocaFrenzy {
 		puntaje += Convert::ToInt32(pez->Tag);
 		delete pez; //Desaparece al pez
 
-		if (puntaje % 5 == 0 && timer_peces->Interval > 300)
+		int nuevo_intervalo = 1000 - (puntaje / 5) * 100;
+		
+		if (nuevo_intervalo < 300)
 		{
-			timer_peces->Interval -= 100;
+			nuevo_intervalo = 300;
 		}
+
+		timer_peces->Interval = nuevo_intervalo;
 		
 		label_puntaje->Text = "Score: " + puntaje;
 	}
@@ -248,12 +264,21 @@ namespace FocaFrenzy {
 		pez->Parent = this;
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
 		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
-		vida->Interval = 4000;
+		
+		int tiempo_vida = 4000 - (puntaje / 5) * 250;
+		
+		if (tiempo_vida < 1500)
+		{
+			tiempo_vida = 1500;
+		}
+
+		vida->Interval = tiempo_vida;
+
 		vida->Tag = pez;
 		vida->Tick += gcnew System::EventHandler(this, &MyForm::vida_tick);
 		vida->Start();
 
-		if (this->Controls->Count > 6)
+		if (this->Controls->Count > 17)
 		{
 			terminar_juego();
 		}
@@ -292,6 +317,7 @@ namespace FocaFrenzy {
 		puntaje = 0;
 		vidas = 3;
 		timer_peces->Interval = 1000;
+		boton_iniciar->Visible = true;
 		label_puntaje->Text = "Score: " + puntaje;
 		label_vidas->Text = "Vidas: " + vidas;
 
