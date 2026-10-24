@@ -101,6 +101,8 @@ namespace FocaFrenzy {
 			this->imagenes_peces->ImageStream = (cli::safe_cast<System::Windows::Forms::ImageListStreamer^>(resources->GetObject(L"imagenes_peces.ImageStream")));
 			this->imagenes_peces->TransparentColor = System::Drawing::Color::Transparent;
 			this->imagenes_peces->Images->SetKeyName(0, L"pez1.png");
+			this->imagenes_peces->Images->SetKeyName(1, L"pez2.png");
+			this->imagenes_peces->Images->SetKeyName(2, L"pez3.png");
 			// 
 			// MyForm
 			// 
@@ -134,7 +136,7 @@ namespace FocaFrenzy {
 
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
 		PictureBox^ pez = gcnew PictureBox();
-		pez->Image = imagenes_peces->Images[0];
+		pez->Image = imagenes_peces->Images[r->Next(3)];
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
@@ -168,7 +170,7 @@ namespace FocaFrenzy {
 	{
 		Random^ r = gcnew Random();
 		PictureBox^ pez = gcnew PictureBox();
-		pez->Image = imagenes_peces->Images[0];
+		pez->Image = imagenes_peces->Images[r->Next(3)];
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
@@ -179,7 +181,7 @@ namespace FocaFrenzy {
 
 		timer_peces->Interval = 500;
 
-		if (this->Controls->Count > 5)
+		if (this->Controls->Count > 6)
 		{
 			timer_peces->Stop(); //Aqui se van a detener los peces
 			MessageBox::Show("You lost! Your score was: " + puntaje);
