@@ -77,13 +77,15 @@ namespace FocaFrenzy {
 			// 
 			// boton_iniciar
 			// 
-			this->boton_iniciar->BackColor = System::Drawing::Color::Azure;
+			this->boton_iniciar->BackColor = System::Drawing::Color::Orange;
+			this->boton_iniciar->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+			this->boton_iniciar->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->boton_iniciar->Font = (gcnew System::Drawing::Font(L"Consolas", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->boton_iniciar->ForeColor = System::Drawing::SystemColors::InactiveCaptionText;
-			this->boton_iniciar->Location = System::Drawing::Point(313, 245);
+			this->boton_iniciar->Location = System::Drawing::Point(343, 247);
 			this->boton_iniciar->Name = L"boton_iniciar";
-			this->boton_iniciar->Size = System::Drawing::Size(164, 38);
+			this->boton_iniciar->Size = System::Drawing::Size(116, 38);
 			this->boton_iniciar->TabIndex = 0;
 			this->boton_iniciar->Text = L"Play!";
 			this->boton_iniciar->UseVisualStyleBackColor = false;
@@ -219,11 +221,11 @@ namespace FocaFrenzy {
 		
 		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
 		
-		int tiempo_vida = 4000 - (puntaje / 5) * 250;
+		int tiempo_vida = 6000 - (puntaje / 5) * 250;
 
-		if (tiempo_vida < 1500)
+		if (tiempo_vida < 2500)
 		{
-			tiempo_vida = 1500;
+			tiempo_vida = 2500;
 		}
 
 		vida->Interval = tiempo_vida;
@@ -240,14 +242,14 @@ namespace FocaFrenzy {
 		puntaje += Convert::ToInt32(pez->Tag);
 		delete pez; //Desaparece al pez
 
-		int nuevo_intervalo = 1000 - (puntaje / 5) * 100;
+		int nuevo_intervalo = 1500 - (puntaje / 5) * 100;
 		
-		if (nuevo_intervalo < 300)
+		if (nuevo_intervalo < 600)
 		{
-			nuevo_intervalo = 300;
+			nuevo_intervalo = 600;
 		}
 
-		timer_peces->Interval = nuevo_intervalo;
+		timer_peces->Interval = 1500;
 		
 		label_puntaje->Text = "Score: " + puntaje;
 	}
@@ -294,11 +296,11 @@ namespace FocaFrenzy {
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
 		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
 		
-		int tiempo_vida = 4000 - (puntaje / 5) * 250;
+		int tiempo_vida = 6000 - (puntaje / 5) * 250;
 		
-		if (tiempo_vida < 1500)
+		if (tiempo_vida < 2500)
 		{
-			tiempo_vida = 1500;
+			tiempo_vida = 2500;
 		}
 
 		vida->Interval = tiempo_vida;
@@ -336,6 +338,10 @@ namespace FocaFrenzy {
 				terminar_juego();
 			}
 		}
+
+		System::Media::SystemSounds::Beep->Play();
+
+
 	}
 
 	private: void terminar_juego()

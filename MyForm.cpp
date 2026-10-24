@@ -1,4 +1,5 @@
 #include "MyForm.h"
+#include "FormInicio.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -8,6 +9,11 @@ int main(array<String^>^ args)
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	Application::Run(gcnew FocaFrenzy::MyForm());
+	FocaFrenzy::FormInicio^ inicio = gcnew FocaFrenzy::FormInicio();
+
+	if (inicio->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		Application::Run(gcnew FocaFrenzy::MyForm());
+	}
 	return 0;
 }
