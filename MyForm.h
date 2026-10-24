@@ -1,4 +1,5 @@
 #pragma once
+#include "FormGameOver.h"
 
 namespace FocaFrenzy {
 
@@ -373,18 +374,18 @@ namespace FocaFrenzy {
 	{
 		timer_peces->Stop();
 		int puntaje_final = puntaje;
+		bool nuevo_record = false;
 
 		if (puntaje_final > record)
 		{
 			record = puntaje_final;
+			nuevo_record = true;
 			label_record->Text = "Record: " + record;
 		}
 
 		puntaje = 0;
 		vidas = 3;
 		timer_peces->Interval = 1000;
-		boton_iniciar->Visible = true;
-		button_menu->Visible = true;
 		label_puntaje->Text = "Score: " + puntaje;
 		label_vidas->Text = "Vidas: " + vidas;
 		label_vidas->ForeColor = Color::White;
@@ -397,8 +398,21 @@ namespace FocaFrenzy {
 			}
 		}
 
-		MessageBox::Show("You lost! Your score was: " + puntaje_final);
+		FormGameOver^ fin = gcnew FormGameOver();
+		fin->coloca_resultado(puntaje_final, record, nuevo_record);
+		System::Windows::Forms::DialogResult respuesta = fin->ShowDialog();
+		delete fin;
 
+		if (respuesta == System::Windows::Forms::DialogResult::Retry)
+		{
+			button1_Click(nullptr, nullptr);
+		}
+
+		else
+		{
+			volver_al_menu = true;
+			this->Close();
+		}
 	}
 
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e)

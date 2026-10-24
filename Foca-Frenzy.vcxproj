@@ -136,10 +136,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FormGameOver.cpp" />
     <ClCompile Include="FormInicio.cpp" />
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FormGameOver.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="FormInicio.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -148,6 +152,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormGameOver.resx">
+      <DependentUpon>FormGameOver.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormInicio.resx">
       <DependentUpon>FormInicio.h</DependentUpon>
     </EmbeddedResource>
