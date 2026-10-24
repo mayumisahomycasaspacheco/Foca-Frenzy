@@ -39,6 +39,8 @@ namespace FocaFrenzy {
 	private: System::Windows::Forms::Label^ label_puntaje;
 	private: System::Windows::Forms::Timer^ timer_peces;
 	private: System::Windows::Forms::ImageList^ imagenes_peces;
+	private: System::Windows::Forms::Label^ label_vidas;
+
 
 
 
@@ -67,6 +69,7 @@ namespace FocaFrenzy {
 			this->label_puntaje = (gcnew System::Windows::Forms::Label());
 			this->timer_peces = (gcnew System::Windows::Forms::Timer(this->components));
 			this->imagenes_peces = (gcnew System::Windows::Forms::ImageList(this->components));
+			this->label_vidas = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// boton_iniciar
@@ -84,7 +87,7 @@ namespace FocaFrenzy {
 			this->label_puntaje->AutoSize = true;
 			this->label_puntaje->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_puntaje->Location = System::Drawing::Point(12, 9);
+			this->label_puntaje->Location = System::Drawing::Point(10, 10);
 			this->label_puntaje->Name = L"label_puntaje";
 			this->label_puntaje->Size = System::Drawing::Size(119, 32);
 			this->label_puntaje->TabIndex = 1;
@@ -104,12 +107,26 @@ namespace FocaFrenzy {
 			this->imagenes_peces->Images->SetKeyName(1, L"pez2.png");
 			this->imagenes_peces->Images->SetKeyName(2, L"pez3.png");
 			// 
+			// label_vidas
+			// 
+			this->label_vidas->AutoSize = true;
+			this->label_vidas->BackColor = System::Drawing::Color::Transparent;
+			this->label_vidas->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label_vidas->Location = System::Drawing::Point(11, 42);
+			this->label_vidas->Name = L"label_vidas";
+			this->label_vidas->Size = System::Drawing::Size(117, 32);
+			this->label_vidas->TabIndex = 2;
+			this->label_vidas->Text = L"Vidas: 3";
+			this->label_vidas->Click += gcnew System::EventHandler(this, &MyForm::label_vidas_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::Azure;
 			this->ClientSize = System::Drawing::Size(782, 553);
+			this->Controls->Add(this->label_vidas);
 			this->Controls->Add(this->label_puntaje);
 			this->Controls->Add(this->boton_iniciar);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
@@ -125,6 +142,7 @@ namespace FocaFrenzy {
 #pragma endregion
 
 	private: int puntaje = 0;
+	private: int vidas = 3;
 
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
@@ -136,12 +154,35 @@ namespace FocaFrenzy {
 
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
 		PictureBox^ pez = gcnew PictureBox();
-		pez->Image = imagenes_peces->Images[r->Next(3)];
+		int tipo = r->Next(10);
+		int imagen;
+		int puntos;
+
+		if (tipo == 0)
+		{
+			imagen = 2;
+			puntos = 5;
+		}
+
+		else if (tipo <= 3)
+		{
+			imagen = 1;
+			puntos = 3;
+		}
+
+		else
+		{
+			imagen = 0;
+			puntos = 1;
+		}
+
+		pez->Image = imagenes_peces->Images[imagen];
+		pez->Tag = puntos;
+
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
-		pez->Tag = "Pez";
 		pez->Parent = this; //Pegamos en el formulario
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
 		timer_peces->Start();
@@ -150,12 +191,12 @@ namespace FocaFrenzy {
 	private: System::Void pez_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		PictureBox^ pez = (PictureBox^)sender;
+		puntaje += Convert::ToInt32(pez->Tag);
 		delete pez; //Desaparece al pez
-		puntaje++;
 
 		if (puntaje % 5 == 0 && timer_peces->Interval > 300)
 		{
-			timer_peces->Interval -= 100;
+			timer_peces->Interval -= 1000;
 		}
 
 		label_puntaje->Text = "Score: " + puntaje;
@@ -170,16 +211,39 @@ namespace FocaFrenzy {
 	{
 		Random^ r = gcnew Random();
 		PictureBox^ pez = gcnew PictureBox();
-		pez->Image = imagenes_peces->Images[r->Next(3)];
+		int tipo = r->Next(10);
+		int imagen;
+		int puntos;
+
+		if (tipo == 0)
+		{
+			imagen = 2; //dorado
+			puntos = 5;
+		}
+
+		else if (tipo <= 3)
+		{
+			imagen = 1; // azul
+			puntos = 3;
+		}
+
+		else
+		{
+			imagen = 0; //naranja
+			puntos = 1;
+		}
+
+		pez->Image = imagenes_peces->Images[imagen];
+		pez->Tag = puntos;
+
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
-		pez->Tag = "Pez";
 		pez->Parent = this;
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
 
-		timer_peces->Interval = 500;
+		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
 
 		if (this->Controls->Count > 6)
 		{
@@ -192,14 +256,17 @@ namespace FocaFrenzy {
 
 			for (int i = this->Controls->Count - 1; i >= 0; i--)
 			{
-				if (this->Controls[i]->Tag != nullptr && this->Controls[i]->Tag->ToString() == "Pez")
+				if (this->Controls[i]->Tag != nullptr)
 				{
 					delete this->Controls[i];
 				}
 			}
-
-
 		}
+	}
+
+	private: System::Void label_vidas_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+
 	}
 };
 }
