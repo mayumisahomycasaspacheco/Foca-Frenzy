@@ -97,7 +97,7 @@ namespace FocaFrenzy {
 			// timer_peces
 			// 
 			this->timer_peces->Interval = 1000;
-			this->timer_peces->Tick += gcnew System::EventHandler(this, &MyForm::timer_peces_Tick);
+			this->timer_peces->Tick += gcnew System::EventHandler(this, &MyForm::timer_peces_tick);
 			// 
 			// imagenes_peces
 			// 
@@ -184,11 +184,16 @@ namespace FocaFrenzy {
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
 		pez->Parent = this; //Pegamos en el formulario
-		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
+		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
+		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
+		vida->Interval = 4000;
+		vida->Tag = pez;
+		vida->Tick += gcnew System::EventHandler(this, &MyForm::vida_tick);
+		vida->Start();
 		timer_peces->Start();
 	}
 
-	private: System::Void pez_Click(System::Object^ sender, System::EventArgs^ e)
+	private: System::Void pez_click(System::Object^ sender, System::EventArgs^ e)
 	{
 		PictureBox^ pez = (PictureBox^)sender;
 		puntaje += Convert::ToInt32(pez->Tag);
@@ -196,9 +201,9 @@ namespace FocaFrenzy {
 
 		if (puntaje % 5 == 0 && timer_peces->Interval > 300)
 		{
-			timer_peces->Interval -= 1000;
+			timer_peces->Interval -= 100;
 		}
-
+		
 		label_puntaje->Text = "Score: " + puntaje;
 	}
 	
@@ -207,7 +212,7 @@ namespace FocaFrenzy {
 
 	}
 
-	private: System::Void timer_peces_Tick(System::Object^ sender, System::EventArgs^ e)
+	private: System::Void timer_peces_tick(System::Object^ sender, System::EventArgs^ e)
 	{
 		Random^ r = gcnew Random();
 		PictureBox^ pez = gcnew PictureBox();
@@ -241,31 +246,64 @@ namespace FocaFrenzy {
 		pez->Left = r->Next(this->ClientSize.Width - 60);
 		pez->Top = r->Next(this->ClientSize.Height - 60);
 		pez->Parent = this;
-		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_Click);
-
+		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
 		System::Windows::Forms::Timer^ vida = gcnew System::Windows::Forms::Timer();
+		vida->Interval = 4000;
+		vida->Tag = pez;
+		vida->Tick += gcnew System::EventHandler(this, &MyForm::vida_tick);
+		vida->Start();
 
 		if (this->Controls->Count > 6)
 		{
-			timer_peces->Stop(); //Aqui se van a detener los peces
-			MessageBox::Show("You lost! Your score was: " + puntaje);
-			
-			puntaje = 0; //Reinicia el puntaje
-			
-			label_puntaje->Text = "Score: " + puntaje; //Actualiza lo que se ve
-
-			for (int i = this->Controls->Count - 1; i >= 0; i--)
-			{
-				if (this->Controls[i]->Tag != nullptr)
-				{
-					delete this->Controls[i];
-				}
-			}
+			terminar_juego();
 		}
 	}
 
 	private: System::Void label_vidas_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+
+	}
+
+	private: System::Void vida_tick(System::Object^ sender, System::EventArgs^ e)
+	{
+		System::Windows::Forms::Timer^ t = (System::Windows::Forms::Timer^)sender;
+		t->Stop();
+		PictureBox^ pez = (PictureBox^)t->Tag;
+		delete t;
+
+		if (!pez->IsDisposed)
+		{
+			delete pez;
+			vidas--;
+			label_vidas->Text = "Vidas: " + vidas;
+
+			if (vidas <= 0)
+			{
+				terminar_juego();
+			}
+		}
+	}
+
+	private: void terminar_juego()
+	{
+		timer_peces->Stop();
+		int puntaje_final = puntaje;
+
+		puntaje = 0;
+		vidas = 3;
+		timer_peces->Interval = 1000;
+		label_puntaje->Text = "Score: " + puntaje;
+		label_vidas->Text = "Vidas: " + vidas;
+
+		for (int i = this->Controls->Count - 1; i >= 0; i--)
+		{
+			if (this->Controls[i]->Tag != nullptr)
+			{
+				delete this->Controls[i];
+			}
+		}
+
+		MessageBox::Show("You lost! Your score was: " + puntaje_final);
 
 	}
 };
