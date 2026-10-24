@@ -35,12 +35,14 @@ namespace FocaFrenzy {
 			}
 		}
 	private: System::Windows::Forms::Button^ boton_iniciar;
-	
+
 	private: System::Windows::Forms::Label^ label_puntaje;
 	private: System::Windows::Forms::Timer^ timer_peces;
 	private: System::Windows::Forms::ImageList^ imagenes_peces;
 	private: System::Windows::Forms::Label^ label_vidas;
 	private: System::Windows::Forms::Label^ label_record;
+	private: System::Windows::Forms::Button^ button_menu;
+
 
 
 
@@ -73,6 +75,7 @@ namespace FocaFrenzy {
 			this->imagenes_peces = (gcnew System::Windows::Forms::ImageList(this->components));
 			this->label_vidas = (gcnew System::Windows::Forms::Label());
 			this->label_record = (gcnew System::Windows::Forms::Label());
+			this->button_menu = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// boton_iniciar
@@ -129,7 +132,7 @@ namespace FocaFrenzy {
 			this->label_vidas->Name = L"label_vidas";
 			this->label_vidas->Size = System::Drawing::Size(98, 23);
 			this->label_vidas->TabIndex = 2;
-			this->label_vidas->Text = L"Vidas: 3";
+			this->label_vidas->Text = L"Lives: 3";
 			this->label_vidas->Click += gcnew System::EventHandler(this, &MyForm::label_vidas_Click);
 			// 
 			// label_record
@@ -146,6 +149,22 @@ namespace FocaFrenzy {
 			this->label_record->Text = L"Record: 0";
 			this->label_record->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
 			// 
+			// button_menu
+			// 
+			this->button_menu->BackColor = System::Drawing::Color::Orange;
+			this->button_menu->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+			this->button_menu->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button_menu->Font = (gcnew System::Drawing::Font(L"Consolas", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button_menu->ForeColor = System::Drawing::SystemColors::InactiveCaptionText;
+			this->button_menu->Location = System::Drawing::Point(343, 291);
+			this->button_menu->Name = L"button_menu";
+			this->button_menu->Size = System::Drawing::Size(116, 38);
+			this->button_menu->TabIndex = 4;
+			this->button_menu->Text = L"Return";
+			this->button_menu->UseVisualStyleBackColor = false;
+			this->button_menu->Click += gcnew System::EventHandler(this, &MyForm::button_menu_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
@@ -154,6 +173,7 @@ namespace FocaFrenzy {
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 			this->ClientSize = System::Drawing::Size(782, 553);
+			this->Controls->Add(this->button_menu);
 			this->Controls->Add(this->label_record);
 			this->Controls->Add(this->label_vidas);
 			this->Controls->Add(this->label_puntaje);
@@ -174,6 +194,7 @@ namespace FocaFrenzy {
 	private: int puntaje = 0;
 	private: int vidas = 3;
 	private: int record = 0;
+	public: bool volver_al_menu = false;
 
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
@@ -184,6 +205,7 @@ namespace FocaFrenzy {
 	{
 
 		boton_iniciar->Visible = false;
+		button_menu->Visible = false;
 
 		Random^ r = gcnew Random(); //Crea un generador de numeros al azar y guardamos en r
 		PictureBox^ pez = gcnew PictureBox();
@@ -242,14 +264,14 @@ namespace FocaFrenzy {
 		puntaje += Convert::ToInt32(pez->Tag);
 		delete pez; //Desaparece al pez
 
-		int nuevo_intervalo = 1500 - (puntaje / 5) * 100;
+		int nuevo_intervalo = 1000 - (puntaje / 5) * 100;
 		
-		if (nuevo_intervalo < 600)
+		if (nuevo_intervalo < 400)
 		{
-			nuevo_intervalo = 600;
+			nuevo_intervalo = 400;
 		}
 
-		timer_peces->Interval = 1500;
+		timer_peces->Interval = nuevo_intervalo;
 		
 		label_puntaje->Text = "Score: " + puntaje;
 	}
@@ -290,7 +312,7 @@ namespace FocaFrenzy {
 
 		pez->SizeMode = PictureBoxSizeMode::AutoSize;
 		pez->BackColor = Color::Transparent;
-		pez->Left = r->Next(this->ClientSize.Width - 60);
+		pez->Left = r->Next(this->ClientSize.Width - 64);
 		pez->Top = 48 + r->Next(this->ClientSize.Height - 48 - 40);
 		pez->Parent = this;
 		pez->Click += gcnew System::EventHandler(this, &MyForm::pez_click);
@@ -332,15 +354,18 @@ namespace FocaFrenzy {
 			delete pez;
 			vidas--;
 			label_vidas->Text = "Vidas: " + vidas;
+			System::Media::SystemSounds::Beep->Play();
+
+			if (vidas == 1)
+			{
+				label_vidas->ForeColor = Color::Tomato;
+			}
 
 			if (vidas <= 0)
 			{
 				terminar_juego();
 			}
 		}
-
-		System::Media::SystemSounds::Beep->Play();
-
 
 	}
 
@@ -359,8 +384,10 @@ namespace FocaFrenzy {
 		vidas = 3;
 		timer_peces->Interval = 1000;
 		boton_iniciar->Visible = true;
+		button_menu->Visible = true;
 		label_puntaje->Text = "Score: " + puntaje;
 		label_vidas->Text = "Vidas: " + vidas;
+		label_vidas->ForeColor = Color::White;
 
 		for (int i = this->Controls->Count - 1; i >= 0; i--)
 		{
@@ -378,5 +405,13 @@ namespace FocaFrenzy {
 	{
 
 	}
+	
+    private: System::Void button_menu_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		timer_peces->Stop();
+		volver_al_menu = true;
+		this->Close();
+	}
+
 };
 }

@@ -9,11 +9,24 @@ int main(array<String^>^ args)
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	FocaFrenzy::FormInicio^ inicio = gcnew FocaFrenzy::FormInicio();
-
-	if (inicio->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	
+	bool seguir = true;
+	while (seguir)
 	{
-		Application::Run(gcnew FocaFrenzy::MyForm());
+		FocaFrenzy::FormInicio^ inicio = gcnew FocaFrenzy::FormInicio();
+		
+		if (inicio->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+		{
+			FocaFrenzy::MyForm^ juego = gcnew FocaFrenzy::MyForm();
+			Application::Run(juego);
+			seguir = juego->volver_al_menu;
+		}
+
+		else
+		{
+			seguir = false;
+		}
 	}
+	
 	return 0;
 }
