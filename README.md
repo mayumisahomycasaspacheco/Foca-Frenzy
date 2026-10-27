@@ -5,8 +5,7 @@ Foca Frenzy is a small fish-catching game made with C++ and Windows Forms. Fish 
 
 ## How to run it
 1. Go to the Releases section of this repository.
-2. Download the file and unzip it if needed.
-3. Open .exe and play.
+2. Download.exe and play.
 
 ## Made with
 - C++/CLI and Windows Forms, in Visual Studio
